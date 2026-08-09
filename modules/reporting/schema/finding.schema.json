@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReconFinding",
+  "type": "object",
+  "required": ["source"],
+  "properties": {
+    "source": {
+      "type": "object",
+      "required": ["module", "tool"],
+      "properties": {
+        "module": { "type": "string" },
+        "tool":   { "type": "string" },
+        "file":   { "type": "string" },
+        "url":    { "type": "string" },
+        "host":   { "type": "string" },
+        "line":   { "type": "integer" }
+      }
+    },
+    "host": { "type": "string" },
+    "ips":  { "type": "array", "items": { "type": "string" } },
+    "url":  { "type": "string" }
+  }
+}

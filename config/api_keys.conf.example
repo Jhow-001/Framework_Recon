@@ -1,0 +1,31 @@
+
+# =============================================================================
+# API Keys
+# =============================================================================
+
+INTELX_API_KEY="1e78aeac-d4c7-4e75-a8e6-cf0ce2096ab7"
+
+GITHUB_TOKEN="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"
+
+VIRUSTOTAL_API_KEY="fae5e7164bc3eb7170862d06cd88ebe13e3edc63592ead055ebedea64d2f4eb7"
+
+SHODAN_API_KEY="VDuVWDugJ6oWKJPAK7qWC9BazHXN3iEN"
+
+CHAOS_API_KEY=""
+
+CENSYS_API_ID="8xtc1EZf"
+
+CENSYS_API_KEY="censys_8xtc1EZf_Js9uoSxHxsT2SJ3GgaZ5M2MB"
+
+URLSCAN_API_KEY="019f998d-b294-72b5-adbc-d5c7b552e895"
+
+FOFA_API_KEY="66165cfb47139033614f13909ccfae2c"
+
+FOFA_EMAIL="acessoremotogeral@gmial.com"
+
+ZOOMEYE_API_KEY="683a7d7B-3C95-8F37C-A724-6E7E448A253"
+
+NETLAS_API_KEY="ChHKxwwobVBtoTKYI21jc0T6iIoPIXk7"
+
+
+

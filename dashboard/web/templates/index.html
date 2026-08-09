@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TOOLS SET JHOW-001</title>
+  <style>
+    :root {
+      --text: #e8f0ff;
+      --muted: #8aa0b8;
+      --accent: #00a2ff;
+      --red: #ff3b5c;
+      --green: #3dd68c;
+      --panel: rgba(0, 0, 0, 0.72);
+      --line: rgba(255,255,255,0.12);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--text);
+      background-color: #000;
+      background-image: url("/static/bg.jpg");
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    .wrap {
+      min-height: 100vh;
+      background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.82));
+      padding: 1.25rem 1.5rem 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+    #live-clock {
+      color: var(--red);
+      font-size: 0.95rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .target-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+      padding: 0.75rem 1rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .target-row .label {
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .target-row .domain { font-size: 1.1rem; font-weight: 700; }
+    .target-row .started { color: var(--muted); font-size: 0.9rem; }
+
+    .toolbar { margin-bottom: 1rem; }
+    select {
+      background: #000;
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      font-family: inherit;
+      min-width: 220px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1rem;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+    }
+    .panel h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+    td {
+      padding: 0.35rem 0.25rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .tool-line {
+      display: grid;
+      grid-template-columns: 140px 1fr 70px;
+      gap: 0.5rem;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.88rem;
+    }
+    .tool-line .t { color: var(--muted); font-size: 0.8rem; }
+    .tool-line .elapsed {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--green);
+    }
+    .tool-line .elapsed.live,
+    .elapsed.live { color: var(--red); }
+    .empty { color: var(--muted); font-size: 0.85rem; }
+    #ws-status {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-left: 0.75rem;
+    }
+    .ok { color: var(--green); }
+    .error { color: var(--red); }
+    .running { color: var(--red); }
+    .waiting { color: #ffcc00; }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>TOOLS SET JHOW-001</h1>
+      <div>
+        <span id="live-clock">—</span>
+        <span id="ws-status">WebSocket: …</span>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <select id="domain">
+        {% if not domains %}
+          <option value="">(no results)</option>
+        {% endif %}
+        {% for d in domains %}
+          <option value="{{ d }}" {% if d == domain %}selected{% endif %}>{{ d }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="target-row">
+      <div>
+        <span class="label">TARGET:</span>
+        <span class="domain" id="target-domain">—</span>
+      </div>
+      <div class="started">
+        started <span id="started-fmt">—</span>
+      </div>
+    </div>
+
+    <!-- Reporting V2 — logo abaixo do TARGET -->
+    <section id="report-card" class="target-row" style="flex-direction:column; align-items:stretch; margin-bottom:1.25rem;">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; width:100%;">
+        <span class="label">REPORTING V2</span>
+        <span id="report-generated" class="started">—</span>
+      </div>
+      <div id="report-counts" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:0.5rem;">
+        <span>CRITICAL: <b id="rpt-c">0</b></span>
+        <span>HIGH: <b id="rpt-h">0</b></span>
+        <span>MEDIUM: <b id="rpt-m">0</b></span>
+        <span>LOW: <b id="rpt-l">0</b></span>
+        <span>INFO: <b id="rpt-i">0</b></span>
+      </div>
+      <pre id="report-alerts" style="margin:0.75rem 0 0; max-height:220px; overflow:auto; background:#0a0a0a; border:1px solid var(--line); border-radius:6px; padding:0.75rem; font-size:0.8rem; white-space:pre-wrap;"></pre>
+    </section>
+
+
+    <div class="grid">
+      <div class="panel">
+        <h2>Modules · results</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th style="text-align:right">Results</th>
+            </tr>
+          </thead>
+          <tbody id="modules-body">
+            <tr><td colspan="2" class="empty">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h2>Tools running</h2>
+        <div id="running-tools"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:1rem">
+      <h2>All tools</h2>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Module</th>
+              <th>Status</th>
+              <th style="text-align:right">Results</th>
+              <th style="text-align:right">Time</th>
+            </tr>
+          </thead>
+          <tbody id="all-tools-body">
+            <tr><td colspan="5" class="empty">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

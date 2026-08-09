@@ -1,0 +1,36 @@
+# Runtime
+cache/
+logs/
+results/
+database/
+
+# Secrets
+config/api_keys.conf
+.env
+.env.*
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Dashboard local
+dashboard/web/.venv/
+dashboard/web/__pycache__/
+dashboard/web.bak.*/
+
+# OS / editor
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+
+# Logs / temp
+*.log
+*.tmp
+*.bak

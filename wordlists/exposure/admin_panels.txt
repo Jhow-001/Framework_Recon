@@ -1,0 +1,13 @@
+admin
+administrator
+login
+dashboard
+manager
+console
+wp-admin
+phpmyadmin
+adminer
+cpanel
+webmail
+portal
+panel
