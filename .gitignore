@@ -34,3 +34,10 @@ dashboard/web.bak.*/
 *.log
 *.tmp
 *.bak
+config/api_keys.conf
+*.pyc
+__pycache__/
+logs/
+database/
+results/
+cache/

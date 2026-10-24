@@ -97,6 +97,8 @@ check "linkfinder"        "linkfinder" "no"
 check "xnLinkFinder"      "xnLinkFinder" "no"
 check "jsluice"           "jsluice" "no"
 check "urlfinder"         "urlfinder" "no"
+check "getJS"             "getJS" "no"
+check "subjs"             "subjs" "no"
 
 echo
 echo "--- Cloud ---"
